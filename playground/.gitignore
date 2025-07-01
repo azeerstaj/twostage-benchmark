@@ -1,3 +1,4 @@
 *.pth
 *.onnx
 *.engine
+__pycache__/
