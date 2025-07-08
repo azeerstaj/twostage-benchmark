@@ -4,14 +4,16 @@ import numpy as np
 import PIL.Image as Image
 from infer.tensorrt_infer import TensorRTInfer
 from infer.visualize import visualize_detections
+import datetime
 
 def main():
 
     labels_path = "labels_coco_80.txt"
-    engine_path = "weights/fasterrcnn-12-trt.engine"
+    # engine_path = "weights/fasterrcnn-1_fixed.engine"
+    engine_path = "playground/fasterrcnn-1_fixed.engine"
     
     test_cases_path = "test_cases/"
-    test_cases_path = None
+    # test_cases_path = None
 
     output_path = "output/"
 
@@ -36,7 +38,8 @@ def main():
             if output_path:
                 # Image Visualizations
                 image_path_ = image_path.split('/')[-1].split('.')[0]
-                viz_output_path = os.path.join(output_path, f"{image_path_}.png")
+                ct = datetime.datetime.now()
+                viz_output_path = os.path.join(output_path, f"{image_path_}_{ct}.png")
                 visualize_detections(image_path, viz_output_path, detections, labels)
 
                 # Text Results
