@@ -1,3 +1,5 @@
 *.engine
 *.onnx
 *__pycache__/*
+*.pt
+*nsys*

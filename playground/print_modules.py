@@ -31,6 +31,7 @@ if __name__ == "__main__":
         if arch in key:
             new_dict[key] = tensor
     """
+    torch.save(model.state_dict(), "weights/fasterrcnn1.pt")
 
     print_all_modules(model)
     print_state_dict_info(model)

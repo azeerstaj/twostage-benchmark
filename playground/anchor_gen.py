@@ -2,9 +2,8 @@ import torch
 from torchvision.models.detection.anchor_utils import AnchorGenerator
 from torchvision.models.detection.image_list import ImageList
 
-# Anchor generator parameters
-SIZES = [(32,), (64,), (128,)]
-ASPECT_RATIOS = [(0.5, 1.0, 2.0)] * len(SIZES)
+SIZES = ((32,), (64,), (128,), (256,), (512,))
+ASPECT_RATIOS = ((0.5, 1.0, 2.0),) * len(SIZES)
 
 import numpy as np
 
@@ -111,20 +110,21 @@ if __name__ == "__main__":
     image_shape = (1, 3, 800, 800)
     dummy_images = ImageList(torch.randn(image_shape), image_shape)
 
-    dummy_f1 = torch.randn(1, 256, 100, 100)
-    dummy_f2 = torch.randn(1, 256, 50, 50)
-    dummy_f3 = torch.randn(1, 256, 25, 25)
-    dummy_f4 = torch.randn(1, 256, 10, 10)
-    feature_maps = [dummy_f4]#dummy_f2, dummy_f3]
+    dummy_f1 = torch.randn(1, 256, 200, 200)
+    dummy_f2 = torch.randn(1, 256, 100, 100)
+    dummy_f3 = torch.randn(1, 256, 50, 50)
+    dummy_f4 = torch.randn(1, 256, 25, 25)
+    dummy_f5 = torch.randn(1, 256, 13, 13)
+    feature_maps = (dummy_f1, dummy_f2, dummy_f3, dummy_f4, dummy_f5)
 
     output = anchor_forward(dummy_images,  feature_maps)
 
     # These should match what you're passing to the AnchorGenerator
     # SIZES = ((32,), (64,), (128,))
-    SIZES = ((32,),)
+    # SIZES = ((32,),)
 
     # ASPECT_RATIOS = ((0.5, 1.0, 2.0),)
-    ASPECT_RATIOS = ((0.5,),)
+    # ASPECT_RATIOS = ((0.5,),)
 
     anchor_generator = AnchorGenerator(
         sizes=SIZES,
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
     # Prepare input for numpy version
     image_height, image_width = dummy_images.tensors.shape[-2:]
-    feature_map_shapes = [tuple(fm.shape[-2:]) for fm in feature_maps]  # [(100, 100), (50, 50), (25, 25)]
+    feature_map_shapes = (tuple(fm.shape[-2:]) for fm in feature_maps)  # [(100, 100), (50, 50), (25, 25)]
 
     # Call the numpy anchor generator
     anchors_2_np = anchor_forward_numpy(
@@ -146,9 +146,6 @@ if __name__ == "__main__":
         sizes=SIZES,
         aspect_ratios=ASPECT_RATIOS
     )
-
-    print(anchors_2_np)
-    exit(0)
 
     # Convert numpy result to torch.Tensor for comparison
     anchors_2 = torch.tensor(anchors_2_np, dtype=anchors_1.dtype, device=anchors_1.device)
